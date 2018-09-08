@@ -11,7 +11,7 @@ using namespace std;
 
 /*	This program is a modest tutorial on the use of getopt.
 
-	gettopt is a very old C library that facilitates the parsing of command line arguments.
+	getopt is a very old C library that facilitates the parsing of command line arguments.
 	This tutorial (more like an example) is not complete. You can find documentation on getopt
 	online.
 */
@@ -21,25 +21,26 @@ int main(int argc, char * argv[]) {
 	/*	getopt is typically isolated in a function or method specifically intended to process
 		command line options. Below, I have defined some variables of different types and will
 		pass these to the getopt managing function. Notice I have initialized these variables with
-		there default values.
+		default values.
 
 		That is, if the corresponding option is not specified on the command line, the default
 		value is retained. 
 
-		One of these variables will be *required* - you'll see how this is implemented.
+		One of these variables will be *required* - you'll see how this can be implemented.
 	*/
 
-	int an_integer = 17;
-	float a_float = 12.345;
-	bool a_bool = false;
-	char * a_c_string = nullptr;
-	string a_cpp_string_this_will_be_required;
 	/*	Forward references to supporting functions. Of course, 
 		the forward references would not be needed using a c++ class or by reordering these
 		functions.
 	*/
 	void PrintUsage();
 	bool HandleOptions(int argc, char ** argv, int &, bool &, char **, string &, float &);
+
+	int an_integer = 17;
+	float a_float = 12.345;
+	bool a_bool = false;
+	char * a_c_string = nullptr;
+	string a_cpp_string_this_will_be_required;
 
 	if (!HandleOptions(argc, argv, an_integer, a_bool, &a_c_string, a_cpp_string_this_will_be_required, a_float)) {
 		PrintUsage();
@@ -53,6 +54,8 @@ int main(int argc, char * argv[]) {
 	return 0;
 }
 
+/*	This is not the tradional usage format but is fairly informative
+*/
 void PrintUsage() {
 	cerr << "Usage:" << endl;
 	cerr << "-s string       this is requred." << endl;
@@ -78,6 +81,10 @@ bool HandleOptions(int argc, char ** argv, int & an_int, bool & a_bool, char ** 
 		Notice there is no requirement to keep to any particular order of options.
 	*/
 
+	/*	Notice where optarg is declared? Me neither. It is a global char pointer brought in with getopt.h.
+		It is initialized to a command line option's argument if it has one. Bad things can happen if you
+		make use of optarg when a command line option does NOT have an argument.
+	*/
 	while ((c = getopt(argc, argv, "hf:i:bc:s:")) != -1) {
 		switch (c) {
 			default:
